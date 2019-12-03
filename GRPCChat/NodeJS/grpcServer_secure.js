@@ -1,5 +1,7 @@
 var PROTO_PATH = __dirname + '/grpc_chat.proto';
 var grpc = require('grpc');
+var fs = require('fs');
+var path = require('path');
 var protoLoader = require('@grpc/proto-loader');
 var packageDefinition = protoLoader.loadSync(
     PROTO_PATH,
@@ -48,6 +50,14 @@ var server = new grpc.Server();
 server.addService(grpcChat.ChatService.service, {
     chat:chat
 });
-server.bind('0.0.0.0:50050', grpc.ServerCredentials.createInsecure());
+const ca = fs.readFileSync(path.join(__dirname, 'certs', 'grpc_client_certificate.pem'));
+const key = fs.readFileSync(path.join(__dirname, 'certs', 'privkey.pem'));
+const cert = fs.readFileSync(path.join(__dirname, 'certs', 'certificate.pem'));
+const creds = grpc.ServerCredentials.createSsl(
+  ca,
+  [{ private_key: key, cert_chain: cert }],
+  true
+);
+server.bind('0.0.0.0:50050', creds);
 server.start();
 console.log("gRPC Chat Server started...");

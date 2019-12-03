@@ -1,5 +1,7 @@
 var PROTO_PATH = __dirname + '/grpc_chat.proto';
 var grpc = require('grpc');
+var fs = require('fs');
+var path = require('path');
 var protoLoader = require('@grpc/proto-loader');
 var packageDefinition = protoLoader.loadSync(
     PROTO_PATH,
@@ -12,8 +14,13 @@ var packageDefinition = protoLoader.loadSync(
  var protoDescriptor = grpc.loadPackageDefinition(packageDefinition);
 
  var grpcChat = protoDescriptor.io.mark.grpc.grpcChat;
- var client = new grpcChat.ChatService('localhost:50050',
-                                        grpc.credentials.createInsecure());
+const ca = fs.readFileSync(path.join(__dirname, 'certs', 'certificate.pem'));
+const key = fs.readFileSync(path.join(__dirname, 'certs', 'grpc_client_privkey.pem'));
+const cert = fs.readFileSync(path.join(__dirname, 'certs', 'grpc_client_certificate.pem'));
+const creds = grpc.credentials.createSsl(ca,key,cert);
+
+ var client = new grpcChat.ChatService('localhost:50050',creds);
+
 const readline = require("readline");
 const rl = readline.createInterface({
   input: process.stdin,
@@ -39,6 +46,7 @@ rl.on("line", function(line) {
   if (line === "quit") {
     call.end();
     rl.close();
+   // process.stdin.destroy();
   } else {
     call.write({
     message : line
