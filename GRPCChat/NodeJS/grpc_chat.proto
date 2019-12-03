@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+package io.mark.grpc.grpcChat;
+option java_multiple_files = true;
+
+service ChatService {
+    rpc chat(stream ChatMessage) returns (stream ChatMessage) {}
+}
+
+message ChatMessage {
+    string from = 1;
+    string message = 2;
+}

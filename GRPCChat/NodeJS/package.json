@@ -1,0 +1,15 @@
+{
+  "name": "grpc_chat",
+  "version": "1.0.0",
+  "description": "grpc chat server and client",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Murat Kilic",
+  "license": "MIT",
+  "dependencies": {
+    "@grpc/proto-loader": "^0.5.3",
+    "grpc": "^1.24.2"
+  }
+}
