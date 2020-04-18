@@ -19,7 +19,7 @@ const key = fs.readFileSync(path.join(__dirname, 'certs', 'grpc_client_privkey.p
 const cert = fs.readFileSync(path.join(__dirname, 'certs', 'grpc_client_certificate.pem'));
 const creds = grpc.credentials.createSsl(ca,key,cert);
 
- var client = new grpcChat.ChatService('localhost:50050',creds);
+ var client = new grpcChat.ChatService('containerd.onetechinc.com:50050',creds);
 
 const readline = require("readline");
 const rl = readline.createInterface({
